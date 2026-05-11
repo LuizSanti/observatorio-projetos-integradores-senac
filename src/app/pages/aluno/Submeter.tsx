@@ -9,12 +9,14 @@ import { Textarea } from "../../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { Alert, AlertDescription } from "../../components/ui/alert";
 import { CheckCircle, AlertCircle, Loader2, Upload } from "lucide-react";
+import { api } from "../../../services/api";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
 export default function SubmeterProjeto() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<FormStatus>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
   const [formData, setFormData] = useState({
     titulo: "",
     descricao: "",
@@ -26,16 +28,31 @@ export default function SubmeterProjeto() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
+    setErrorMsg("");
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    if (!formData.arquivo) {
+      setErrorMsg("Selecione um arquivo PDF.");
+      setStatus("error");
+      return;
+    }
 
-    setStatus("success");
+    const data = new FormData();
+    data.append("titulo", formData.titulo);
+    data.append("descricao", formData.descricao);
+    data.append("turma", formData.turma);
+    data.append("arquivo", formData.arquivo);
+    if (formData.link) data.append("link", formData.link);
 
-    // Redirect after success
-    setTimeout(() => {
-      navigate("/aluno/projetos");
-    }, 2000);
+    const response = await api.post("/api/projetos/", data, true);
+
+    if (response.ok) {
+      setStatus("success");
+      setTimeout(() => navigate("/aluno/projetos"), 2000);
+    } else {
+      const err = await response.json();
+      setErrorMsg(JSON.stringify(err));
+      setStatus("error");
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,14 +62,13 @@ export default function SubmeterProjeto() {
   };
 
   return (
-    <MainLayout 
-      userType="aluno" 
-      userName="João Silva" 
+    <MainLayout
+      userType="aluno"
+      userName="João Silva"
       userTypeLabel="Aluno"
       notifications={2}
     >
       <div className="p-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">Submeter Projeto</h1>
           <p className="text-muted-foreground mt-1">Envie seu projeto integrador para avaliação</p>
@@ -65,7 +81,6 @@ export default function SubmeterProjeto() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Título */}
                 <div className="space-y-2">
                   <Label htmlFor="titulo">
                     Título do Projeto <span className="text-destructive">*</span>
@@ -80,24 +95,21 @@ export default function SubmeterProjeto() {
                   />
                 </div>
 
-                {/* Descrição */}
                 <div className="space-y-2">
                   <Label htmlFor="descricao">
                     Descrição <span className="text-destructive">*</span>
                   </Label>
                   <Textarea
                     id="descricao"
-                    placeholder="Descreva brevemente seu projeto, seus objetivos e funcionalidades principais"
+                    placeholder="Descreva brevemente seu projeto"
                     rows={5}
                     value={formData.descricao}
                     onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
                     required
                     disabled={status === "loading" || status === "success"}
                   />
-                  <p className="text-xs text-muted-foreground">Mínimo de 100 caracteres</p>
                 </div>
 
-                {/* Turma */}
                 <div className="space-y-2">
                   <Label htmlFor="turma">
                     Turma <span className="text-destructive">*</span>
@@ -106,7 +118,6 @@ export default function SubmeterProjeto() {
                     value={formData.turma}
                     onValueChange={(value) => setFormData({ ...formData, turma: value })}
                     disabled={status === "loading" || status === "success"}
-                    required
                   >
                     <SelectTrigger id="turma">
                       <SelectValue placeholder="Selecione sua turma" />
@@ -120,7 +131,6 @@ export default function SubmeterProjeto() {
                   </Select>
                 </div>
 
-                {/* Arquivo */}
                 <div className="space-y-2">
                   <Label htmlFor="arquivo">
                     Arquivo do Projeto (PDF) <span className="text-destructive">*</span>
@@ -141,15 +151,12 @@ export default function SubmeterProjeto() {
                       <span className="text-sm text-muted-foreground"> ou arraste o arquivo aqui</span>
                     </label>
                     {formData.arquivo && (
-                      <p className="text-sm text-foreground mt-2">
-                        ✓ {formData.arquivo.name}
-                      </p>
+                      <p className="text-sm text-foreground mt-2">✓ {formData.arquivo.name}</p>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">Formato: PDF | Tamanho máximo: 10MB</p>
                 </div>
 
-                {/* Link Opcional */}
                 <div className="space-y-2">
                   <Label htmlFor="link">Link Opcional (GitHub, Drive, etc.)</Label>
                   <Input
@@ -162,7 +169,6 @@ export default function SubmeterProjeto() {
                   />
                 </div>
 
-                {/* Status Messages */}
                 {status === "success" && (
                   <Alert className="bg-[#2E7D32]/10 border-[#2E7D32]">
                     <CheckCircle className="h-4 w-4 text-[#2E7D32]" />
@@ -176,12 +182,11 @@ export default function SubmeterProjeto() {
                   <Alert className="bg-destructive/10 border-destructive">
                     <AlertCircle className="h-4 w-4 text-destructive" />
                     <AlertDescription className="text-destructive">
-                      Erro ao enviar projeto. Por favor, tente novamente.
+                      {errorMsg || "Erro ao enviar projeto. Tente novamente."}
                     </AlertDescription>
                   </Alert>
                 )}
 
-                {/* Buttons */}
                 <div className="flex gap-3 pt-4">
                   <Button
                     type="button"
