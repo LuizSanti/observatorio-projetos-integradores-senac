@@ -4,27 +4,29 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardHeader } from "../components/ui/card";
+import { auth } from "../../services/auth";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
-    // Mock authentication
-    if (email === "aluno@senac.br" && password === "aluno123") {
+    const result = await auth.login(username, password);
+
+    if (result.success) {
       navigate("/aluno/dashboard");
-    } else if (email === "professor@senac.br" && password === "prof123") {
-      navigate("/professor/dashboard");
-    } else if (email === "admin@senac.br" && password === "admin123") {
-      navigate("/admin/dashboard");
     } else {
-      setError("Credenciais inválidas");
+      setError("Usuário ou senha inválidos.");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -44,15 +46,14 @@ export default function Login() {
         <CardContent className="pb-8">
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">E-mail</Label>
+              <Label htmlFor="username">Usuário</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="seu.email@senac.br"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                placeholder="seu.usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
-                className="bg-input-background"
               />
             </div>
             <div className="space-y-2">
@@ -64,7 +65,6 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-input-background"
               />
             </div>
             {error && (
@@ -75,31 +75,11 @@ export default function Login() {
             <Button
               type="submit"
               className="w-full bg-primary hover:bg-primary/90"
+              disabled={loading}
             >
-              Entrar
+              {loading ? "Entrando..." : "Entrar"}
             </Button>
-
-            {/* Cadastro Link */}
-            <div className="text-center text-sm text-muted-foreground">
-              Não possui uma conta?{" "}
-              <button
-                type="button"
-                onClick={() => navigate("/cadastro")}
-                className="text-primary hover:underline"
-              >
-                Criar conta
-              </button>
-            </div>
           </form>
-
-          <div className="mt-6 p-4 bg-muted/50 rounded-md">
-            <p className="text-xs text-muted-foreground mb-2 font-semibold">Credenciais de teste:</p>
-            <div className="space-y-1 text-xs text-muted-foreground">
-              <p>Aluno: aluno@senac.br / aluno123</p>
-              <p>Professor: professor@senac.br / prof123</p>
-              <p>Admin: admin@senac.br / admin123</p>
-            </div>
-          </div>
         </CardContent>
         <div className="py-4 text-center border-t">
           <p className="text-xs text-muted-foreground">Senac Fecomércio © 2026</p>
