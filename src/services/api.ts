@@ -1,4 +1,4 @@
-const API_URL = 'http://127.0.0.1:8000';
+const API_URL = 'https://observatorio-senac-api.onrender.com';
 
 export const api = {
   async post(endpoint: string, data: object | FormData, auth = false) {
