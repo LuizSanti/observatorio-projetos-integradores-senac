@@ -155,5 +155,7 @@ if os.getenv('DJANGO_ENV') == 'production':
     DEBUG = False
     ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '')]
     CORS_ALLOWED_ORIGINS = [
-        os.getenv('FRONTEND_URL', ''),
+        url for url in [
+            os.getenv('FRONTEND_URL', ''),
+        ] if url
     ]
