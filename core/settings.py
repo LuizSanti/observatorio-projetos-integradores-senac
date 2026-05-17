@@ -11,17 +11,14 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k@2k_)bvloxi-s7&@6iazj4cdv^b#qfw!zg@a4m%esu=$p0%@6'
-
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-k@2k_)bvloxi-s7&@6iazj4cdv^b#qfw!zg@a4m%esu=$p0%@6')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -46,6 +43,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -120,6 +118,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static'] if (BASE_DIR / 'static').exists() else []
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -149,3 +149,11 @@ SIMPLE_JWT = {
 # Media files (uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Produção
+if os.getenv('DJANGO_ENV') == 'production':
+    DEBUG = False
+    ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '')]
+    CORS_ALLOWED_ORIGINS = [
+        os.getenv('FRONTEND_URL', ''),
+    ]
