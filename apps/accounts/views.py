@@ -24,25 +24,3 @@ def logout_view(request):
 @login_required
 def dashboard_view(request):
     return render(request, 'accounts/dashboard.html')
-
-@csrf_exempt
-def create_admin(request):
-    if request.method == 'POST':
-        secret = request.GET.get('secret')
-        if secret != 'senac2026setup':
-            return JsonResponse({'error': 'Não autorizado'}, status=403)
-        
-        from apps.accounts.models import CustomUser
-        data = json.loads(request.body)
-        
-        if CustomUser.objects.filter(username=data['username']).exists():
-            return JsonResponse({'error': 'Usuário já existe'})
-        
-        user = CustomUser.objects.create_superuser(
-            username=data['username'],
-            password=data['password'],
-            perfil='admin'
-        )
-        return JsonResponse({'success': f'Usuário {user.username} criado'})
-    
-    return JsonResponse({'error': 'Método não permitido'}, status=405)
