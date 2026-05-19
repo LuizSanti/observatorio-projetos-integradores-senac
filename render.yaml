@@ -13,3 +13,27 @@ services:
         value: observatorio-senac-api.onrender.com
       - key: FRONTEND_URL
         value: https://observatorio-senac.vercel.app
+      - key: DB_NAME
+        fromDatabase:
+          name: observatorio-senac-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: observatorio-senac-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: observatorio-senac-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: observatorio-senac-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: observatorio-senac-db
+          property: port
+
+databases:
+  - name: observatorio-senac-db
+    plan: free
