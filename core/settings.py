@@ -153,9 +153,32 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Produção
 if os.getenv('DJANGO_ENV') == 'production':
     DEBUG = False
+
     ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '')]
+
     CORS_ALLOWED_ORIGINS = [
         url for url in [
             os.getenv('FRONTEND_URL', ''),
         ] if url
     ]
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME', 'observatorio'),
+            'USER': os.getenv('DB_USER', 'postgres'),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+        }
+    }
+
+else:
+    DEBUG = True
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
