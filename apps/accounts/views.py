@@ -1,11 +1,38 @@
-from django.contrib.auth.models import User # Importante adicionar este import!
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+# --- Funções Originais ---
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')
+        else:
+            return render(request, 'accounts/login.html', {'form': {'errors': True}})
+    return render(request, 'accounts/login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'accounts/dashboard.html')
+
+# --- Função de Setup (Temporária) ---
+
 @csrf_exempt
 def setup_view(request):
-    # Verificação simples de segurança para ninguém mais usar
+    # Verificação de segurança
     if request.GET.get('secret') != 'senac2026setup':
         return JsonResponse({'error': 'Unauthorized'}, status=401)
     
