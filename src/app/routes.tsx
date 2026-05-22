@@ -48,6 +48,10 @@ export const router = createBrowserRouter([
     Component: AlunoSubmeter,
   },
   {
+    path: "/aluno/projetos/:id/editar",
+    Component: AlunoSubmeter,
+  },
+  {
     path: "/aluno/perfil",
     Component: () => <Perfil userType="aluno" />,
   },
