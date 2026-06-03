@@ -4,6 +4,9 @@ from apps.accounts.models import CustomUser
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 import json
 
 # --- Funções Originais ---
@@ -55,3 +58,13 @@ def setup_view(request):
             return JsonResponse({'error': str(e)}, status=500)
             
     return JsonResponse({'error': 'Use POST'}, status=405)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def me_view(request):
+    user = request.user
+    return Response({
+        'id': user.id,
+        'username': user.username,
+        'perfil': user.perfil,
+    })

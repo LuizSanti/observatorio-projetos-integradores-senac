@@ -1,5 +1,4 @@
-const API_URL = 'https://observatorio-senac-api.onrender.com';
-
+const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 export const api = {
   async post(endpoint: string, data: object | FormData, auth = false) {
     const headers: Record<string, string> = {};
