@@ -21,7 +21,14 @@ export default function Login() {
     const result = await auth.login(username, password);
 
     if (result.success) {
-      navigate("/aluno/dashboard");
+      const perfil = auth.getPerfil();
+      if (perfil === 'admin') {
+        navigate("/admin/dashboard");
+      } else if (perfil === 'professor') {
+        navigate("/professor/dashboard");
+      } else {
+        navigate("/aluno/dashboard");
+      }
     } else {
       setError("Usuário ou senha inválidos.");
     }

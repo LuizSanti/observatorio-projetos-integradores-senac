@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import { EmptyState } from "../../components/shared/EmptyState";
-import { FolderOpen, Eye, Trash2 } from "lucide-react";
+import { FolderOpen, Eye, Trash2, Pencil } from "lucide-react";
 import { api } from "../../../services/api";
 
 const statusConfig: Record<string, { label: string; color: string }> = {
@@ -100,22 +100,31 @@ export default function AlunoProjects() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1 gap-2"
-                      onClick={() => navigate(`/aluno/projetos/${project.id}`)}
-                    >
-                      <Eye className="w-4 h-4" />
-                      Ver Detalhes
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="gap-2 text-destructive hover:text-destructive"
-                      onClick={() => handleDelete(project.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
+  <Button
+    variant="outline"
+    className="flex-1 gap-2"
+    onClick={() => navigate(`/aluno/projetos/${project.id}`)}
+  >
+    <Eye className="w-4 h-4" />
+    Ver
+  </Button>
+  {(project.status === "rascunho" || project.status === "submetido") && (
+  <Button
+    variant="outline"
+    className="gap-2 text-primary hover:text-primary"
+    onClick={() => navigate(`/aluno/projetos/${project.id}/editar`)}
+    >
+    <Pencil className="w-4 h-4" />
+    </Button>
+    )}
+    <Button
+    variant="outline"
+    className="gap-2 text-destructive hover:text-destructive"
+    onClick={() => handleDelete(project.id)}
+  >
+    <Trash2 className="w-4 h-4" />
+  </Button>
+</div>
                 </CardContent>
               </Card>
             ))}
