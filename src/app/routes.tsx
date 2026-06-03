@@ -7,6 +7,7 @@ import AlunoDashboard from "./pages/aluno/Dashboard";
 import AlunoProjetos from "./pages/aluno/Projetos";
 import AlunoSubmeter from "./pages/aluno/Submeter";
 import ProjetoDetalhes from "./pages/aluno/ProjetoDetalhes";
+import EditarProjeto from "./pages/aluno/EditarProjeto.tsx";
 
 // Professor pages
 import ProfessorDashboard from "./pages/professor/Dashboard";
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
   {
     path: "/aluno/submeter",
     Component: AlunoSubmeter,
+  },
+  {
+    path: "/aluno/projetos/:id/editar",
+    Component: EditarProjeto,
   },
   {
     path: "/aluno/perfil",

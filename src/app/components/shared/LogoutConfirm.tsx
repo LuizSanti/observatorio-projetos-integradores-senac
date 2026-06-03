@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import { auth } from "../../../services/auth";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +21,7 @@ export function LogoutConfirm({ open, onOpenChange, onConfirm }: LogoutConfirmPr
   const navigate = useNavigate();
 
   const handleConfirm = () => {
+    auth.logout();
     onOpenChange(false);
     if (onConfirm) {
       onConfirm();
@@ -39,7 +41,7 @@ export function LogoutConfirm({ open, onOpenChange, onConfirm }: LogoutConfirmPr
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={handleConfirm}
             className="bg-destructive hover:bg-destructive/90"
           >

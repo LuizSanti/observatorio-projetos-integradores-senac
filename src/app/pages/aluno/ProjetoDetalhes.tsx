@@ -4,7 +4,7 @@ import { MainLayout } from "../../components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
-import { ArrowLeft, ExternalLink, Calendar, FileText } from "lucide-react";
+import { ArrowLeft, ExternalLink, Calendar, FileText, Pencil } from "lucide-react";
 import { Separator } from "../../components/ui/separator";
 import { api } from "../../../services/api";
 
@@ -91,10 +91,22 @@ export default function ProjetoDetalhes() {
   return (
     <MainLayout userType="aluno" userName="João Silva" userTypeLabel="Aluno" notifications={2}>
       <div className="p-8">
-        <Button variant="ghost" className="mb-6 gap-2" onClick={() => navigate("/aluno/projetos")}>
-          <ArrowLeft className="w-4 h-4" />
-          Voltar para Projetos
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button variant="ghost" className="gap-2" onClick={() => navigate("/aluno/projetos")}>
+            <ArrowLeft className="w-4 h-4" />
+            Voltar para Projetos
+          </Button>
+          {(project.status === "rascunho" || project.status === "submetido") && (
+            <Button
+              variant="outline"
+              className="gap-2"
+              onClick={() => navigate(`/aluno/projetos/${project.id}/editar`)}
+            >
+              <Pencil className="w-4 h-4" />
+              Editar Projeto
+            </Button>
+          )}
+        </div>
 
         <div className="flex items-start justify-between mb-8">
           <div>
