@@ -11,8 +11,9 @@ class IsOwner(permissions.BasePermission):
 
 
 class ProjetoViewSet(viewsets.ModelViewSet):
+    queryset = Projeto.objects.all()
     serializer_class = ProjetoSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
@@ -28,6 +29,7 @@ class ProjetoViewSet(viewsets.ModelViewSet):
             return Projeto.objects.filter(aluno=user)
 
         return Projeto.objects.none()
+
     def perform_create(self, serializer):
         serializer.save(autor=self.request.user)
 
