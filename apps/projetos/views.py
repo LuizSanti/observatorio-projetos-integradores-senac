@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.exceptions import PermissionDenied
 from .models import Projeto, Avaliacao
-from .serializers import ProjetoSerializer, AvaliacaoSerializer
+from apps.projetos.serializers import ProjetoSerializer, AvaliacaoSerializer
 
 
 class IsOwner(permissions.BasePermission):
