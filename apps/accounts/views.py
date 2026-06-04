@@ -7,6 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework import viewsets, permissions
+from rest_framework.parsers import MultiPartParser, FormParser
+from apps.projetos.models import Projeto
+from .serializers import ProjetoSerializer
+from .serializers import Userializer
 import json
 
 # --- Funções Originais ---
@@ -68,3 +73,51 @@ def me_view(request):
         'username': user.username,
         'perfil': user.perfil,
     })
+
+class IsOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.autor == request.user
+
+
+class IsOwnerOrProfessorOrAdmin(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.user.perfil in ['professor', 'admin']:
+            return True
+        return obj.autor == request.user
+
+
+class ProjetoViewSet(viewsets.ModelViewSet):
+    serializer_class = ProjetoSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated(), IsOwnerOrProfessorOrAdmin()]
+        return [permissions.IsAuthenticated()]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.perfil in ['professor', 'admin']:
+            return Projeto.objects.all().order_by('-criado_em')
+        return Projeto.objects.filter(autor=self.request.user).order_by('-criado_em')
+
+    def perform_create(self, serializer):
+        serializer.save(autor=self.request.user)
+
+class IsAdmin(permissions.BasePermission):
+    """Só admin acessa o CRUD de usuários."""
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.perfil == "admin"
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [IsAdmin]
+
+    def get_queryset(self):
+        # Permite filtrar por perfil via query param: /api/users/?perfil=aluno
+        queryset = CustomUser.objects.all().order_by("first_name", "last_name")
+        perfil = self.request.query_params.get("perfil")
+        if perfil:
+            queryset = queryset.filter(perfil=perfil)
+        return queryset

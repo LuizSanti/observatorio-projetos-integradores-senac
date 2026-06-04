@@ -12,6 +12,7 @@ class AvaliacaoSerializer(serializers.ModelSerializer):
         model = Avaliacao
         fields = [
             'id',
+            'projeto',
             'nota_apresentacao',
             'nota_documentacao',
             'nota_inovacao',
@@ -21,6 +22,10 @@ class AvaliacaoSerializer(serializers.ModelSerializer):
             'professor_nome',
             'avaliado_em',
         ]
+        read_only_fields = ["nota_final", "professor_nome", "avaliado_em"]
+        extra_kwargs = {
+            "projeto": {"write_only": True}  # não aparece no GET aninhado dentro de Projeto
+        }
 
 
 class ProjetoSerializer(serializers.ModelSerializer):
