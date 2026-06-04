@@ -2,7 +2,7 @@ import { api } from './api';
 
 export const auth = {
   async login(username: string, password: string) {
-    const response = await api.post('/api/token/', { username, password });
+    const response = await api.post('/api/token/', { username, password }, false);
     
     if (response.ok) {
       const data = await response.json();

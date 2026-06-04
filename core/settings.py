@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import dj_database_url
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,6 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-k@2k_)bvloxi-s7&@6iazj4cdv^b#qfw!zg@a4m%esu=$p0%@6')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+
+# Email remetente — precisa ser de um domínio verificado no Resend
+# Durante testes, use o email da sua conta Resend
+EMAIL_FROM = os.environ.get("EMAIL_FROM", "Observatório Senac <noreply@seudominio.com.br>")
 
 ALLOWED_HOSTS = []
 
@@ -39,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'apps.accounts',
     'apps.projetos',
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
@@ -194,3 +202,22 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+SIMPLE_JWT = {
+    # Access token: 60 minutos — tempo razoável para uma sessão de trabalho
+    # O refresh automático no frontend vai renovar transparentemente
+    "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=60),
+
+    # Refresh token: 7 dias — o usuário não precisa logar todo dia
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+
+    # Gera um novo refresh token a cada renovação
+    # Isso "desliza" a sessão — quem usa regularmente nunca é derrubado
+    "ROTATE_REFRESH_TOKENS":  True,
+
+    # Invalida o refresh token antigo após rotação
+    # Evita que um token roubado seja reutilizado
+    "BLACKLIST_AFTER_ROTATION": True,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}

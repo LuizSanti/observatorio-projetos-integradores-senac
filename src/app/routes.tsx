@@ -1,28 +1,33 @@
 import { createBrowserRouter } from "react-router";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+
 import Login from "./pages/Login";
 import Cadastro from "./pages/Cadastro";
 
 // Aluno pages
-import AlunoDashboard from "./pages/aluno/Dashboard";
-import AlunoProjetos from "./pages/aluno/Projetos";
-import AlunoSubmeter from "./pages/aluno/Submeter";
-import ProjetoDetalhes from "./pages/aluno/ProjetoDetalhes";
-import EditarProjeto from "./pages/aluno/EditarProjeto.tsx";
+import AlunoDashboard   from "./pages/aluno/Dashboard";
+import AlunoProjetos    from "./pages/aluno/Projetos";
+import AlunoSubmeter    from "./pages/aluno/Submeter";
+import ProjetoDetalhes  from "./pages/aluno/ProjetoDetalhes";
+import EditarProjeto    from "./pages/aluno/EditarProjeto.tsx";
 
 // Professor pages
 import ProfessorDashboard from "./pages/professor/Dashboard";
-import ProfessorProjetos from "./pages/professor/Projetos";
-import AvaliarProjeto from "./pages/professor/Avaliar";
+import ProfessorProjetos  from "./pages/professor/Projetos";
+import AvaliarProjeto     from "./pages/professor/Avaliar";
 
 // Admin pages
 import AdminDashboard from "./pages/admin/Dashboard";
-import AdminUsuarios from "./pages/admin/Usuarios";
-import AdminProjetos from "./pages/admin/Projetos";
+import AdminUsuarios  from "./pages/admin/Usuarios";
+import AdminProjetos  from "./pages/admin/Projetos";
 
 // Shared pages
 import Perfil from "./pages/shared/Perfil";
 
 export const router = createBrowserRouter([
+
+  // ── Rotas públicas ────────────────────────────────────────────
+  // Acessíveis sem login — não envolver com ProtectedRoute
   {
     path: "/",
     Component: Login,
@@ -31,70 +36,136 @@ export const router = createBrowserRouter([
     path: "/cadastro",
     Component: Cadastro,
   },
-  // Aluno routes
+
+  // ── Rotas do Aluno ────────────────────────────────────────────
   {
     path: "/aluno/dashboard",
-    Component: AlunoDashboard,
+    element: (
+      <ProtectedRoute allowedPerfis={["aluno"]}>
+        <AlunoDashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/aluno/projetos",
-    Component: AlunoProjetos,
+    element: (
+      <ProtectedRoute allowedPerfis={["aluno"]}>
+        <AlunoProjetos />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/aluno/projetos/:id",
-    Component: ProjetoDetalhes,
-  },
-  {
-    path: "/aluno/submeter",
-    Component: AlunoSubmeter,
+    element: (
+      <ProtectedRoute allowedPerfis={["aluno"]}>
+        <ProjetoDetalhes />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/aluno/projetos/:id/editar",
-    Component: EditarProjeto,
+    element: (
+      <ProtectedRoute allowedPerfis={["aluno"]}>
+        <EditarProjeto />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/aluno/submeter",
+    element: (
+      <ProtectedRoute allowedPerfis={["aluno"]}>
+        <AlunoSubmeter />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/aluno/perfil",
-    Component: () => <Perfil userType="aluno" />,
+    element: (
+      <ProtectedRoute allowedPerfis={["aluno"]}>
+        <Perfil userType="aluno" />
+      </ProtectedRoute>
+    ),
   },
-  // Professor routes
+
+  // ── Rotas do Professor ────────────────────────────────────────
   {
     path: "/professor/dashboard",
-    Component: ProfessorDashboard,
+    element: (
+      <ProtectedRoute allowedPerfis={["professor"]}>
+        <ProfessorDashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/professor/projetos",
-    Component: ProfessorProjetos,
+    element: (
+      <ProtectedRoute allowedPerfis={["professor"]}>
+        <ProfessorProjetos />
+      </ProtectedRoute>
+    ),
   },
   {
+    // /professor/avaliacoes sem ID → lista de projetos para avaliar
+    // Reutiliza ProfessorProjetos propositalmente (mesmo comportamento)
     path: "/professor/avaliacoes",
-    Component: ProfessorProjetos, // Temporary - same as projetos
+    element: (
+      <ProtectedRoute allowedPerfis={["professor"]}>
+        <ProfessorProjetos />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/professor/avaliacoes/:id",
-    Component: AvaliarProjeto, // Temporary - will create specific evaluation page
+    element: (
+      <ProtectedRoute allowedPerfis={["professor"]}>
+        <AvaliarProjeto />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/professor/perfil",
-    Component: () => <Perfil userType="professor" />,
+    element: (
+      <ProtectedRoute allowedPerfis={["professor"]}>
+        <Perfil userType="professor" />
+      </ProtectedRoute>
+    ),
   },
-  // Admin routes
+
+  // ── Rotas do Admin ────────────────────────────────────────────
   {
     path: "/admin/dashboard",
-    Component: AdminDashboard,
+    element: (
+      <ProtectedRoute allowedPerfis={["admin"]}>
+        <AdminDashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/projetos",
-    Component: AdminProjetos, // Reusing professor projects view
+    element: (
+      <ProtectedRoute allowedPerfis={["admin"]}>
+        <AdminProjetos />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/usuarios",
-    Component: AdminUsuarios,
+    element: (
+      <ProtectedRoute allowedPerfis={["admin"]}>
+        <AdminUsuarios />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/perfil",
-    Component: () => <Perfil userType="admin" />,
+    element: (
+      <ProtectedRoute allowedPerfis={["admin"]}>
+        <Perfil userType="admin" />
+      </ProtectedRoute>
+    ),
   },
-  // 404
+
+  // ── 404 ───────────────────────────────────────────────────────
   {
     path: "*",
     Component: () => (
