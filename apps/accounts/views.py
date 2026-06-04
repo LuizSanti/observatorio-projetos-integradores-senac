@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import viewsets, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from apps.projetos.models import Projeto
-from .serializers import ProjetoSerializer
+from apps.projetos.serializers import ProjetoSerializer
 from .serializers import Userializer
 import json
 
