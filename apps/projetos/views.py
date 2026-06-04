@@ -16,7 +16,18 @@ class ProjetoViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
 
     def get_queryset(self):
-        return Projeto.objects.filter(autor=self.request.user).order_by('-criado_em')
+        user = self.request.user
+
+        if user.perfil == 'admin':
+            return Projeto.objects.all()
+
+        elif user.perfil == 'professor':
+            return Projeto.objects.all()
+
+        elif user.perfil == 'aluno':
+            return Projeto.objects.filter(aluno=user)
+
+        return Projeto.objects.none()
     def perform_create(self, serializer):
         serializer.save(autor=self.request.user)
 
