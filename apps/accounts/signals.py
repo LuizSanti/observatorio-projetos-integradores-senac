@@ -27,9 +27,5 @@ def notificar_submissao(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Avaliacao)
-def notificar_avaliacao(sender, instance, created, **kwargs):
-    if not created:
-        return
-
-    print("📧 EMAIL DE AVALIAÇÃO DISPARADO")
+def notificar_avaliacao(sender, instance, **kwargs):
     enviar_email_avaliacao(instance)
