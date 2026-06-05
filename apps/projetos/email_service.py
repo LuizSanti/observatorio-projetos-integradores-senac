@@ -1,26 +1,21 @@
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from django.core.mail import send_mail
 from django.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-def _send(to: str, subject: str, html: str) -> None:
+def _send(to: str, subject: str, message: str) -> None:
     try:
-        message = Mail(
-            from_email=settings.EMAIL_FROM,
-            to_emails=to,
+        send_mail(
             subject=subject,
-            html_content=html,
+            message="",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[to],
+            html_message=message,
+            fail_silently=False,
         )
-
-        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
-        response = sg.send(message)
-
-        logger.info(
-            f"📧 Email enviado para {to} | status={response.status_code}"
-        )
+        logger.info(f"📧 Email enviado para {to}")
     except Exception as e:
         logger.error(f"❌ Erro ao enviar email para {to}: {e}")
 
@@ -30,7 +25,7 @@ def enviar_email_avaliacao(avaliacao) -> None:
     if not aluno.email:
         return
 
-    aprovado = float(avaliacao.nota_final) >= 6
+    aprovado = avaliacao.nota_final >= 6
     status = "Aprovado ✅" if aprovado else "Reprovado ❌"
 
     html = f"""
@@ -43,5 +38,5 @@ def enviar_email_avaliacao(avaliacao) -> None:
     _send(
         to=aluno.email,
         subject="[Observatório] Avaliação do seu projeto",
-        html=html,
+        message=html,
     )
