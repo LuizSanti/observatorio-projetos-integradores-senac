@@ -1,4 +1,5 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.exceptions import PermissionDenied
 from .models import Projeto, Avaliacao
@@ -26,7 +27,7 @@ class ProjetoViewSet(viewsets.ModelViewSet):
             return Projeto.objects.all()
 
         elif user.perfil == 'aluno':
-            return Projeto.objects.filter(aluno=user)
+            return Projeto.objects.filter(autor=user)
 
         return Projeto.objects.none()
 
@@ -38,7 +39,6 @@ class IsProfessorOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.perfil in ["professor", "admin"]
 
-
 class AvaliacaoViewSet(viewsets.ModelViewSet):
     serializer_class = AvaliacaoSerializer
     permission_classes = [permissions.IsAuthenticated, IsProfessorOrAdmin]
@@ -46,27 +46,36 @@ class AvaliacaoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Avaliacao.objects.select_related("projeto", "professor").all()
 
-    def perform_create(self, serializer):
-        projeto_id = self.request.data.get("projeto")
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-        # Garante que o projeto existe
+        projeto_id = request.data.get("projeto")
+
         try:
             projeto = Projeto.objects.get(pk=projeto_id)
         except Projeto.DoesNotExist:
             raise PermissionDenied("Projeto não encontrado.")
 
-        # Garante que o projeto não foi avaliado ainda
         if hasattr(projeto, "avaliacao"):
             raise PermissionDenied(
                 "Este projeto já possui avaliação. Use PATCH para editar."
             )
 
-        # Salva vinculando o professor logado
         avaliacao = serializer.save(
-            professor=self.request.user,
+            professor=request.user,
             projeto=projeto,
         )
 
-        # Atualiza o status do projeto para "aprovado"
-        projeto.status = "aprovado"
+        
+        if avaliacao.nota_final >= 7:
+            projeto.status = "aprovado"
+        else:
+            projeto.status = "reprovado"
+
         projeto.save()
+
+        return Response(
+            AvaliacaoSerializer(avaliacao).data,
+            status=status.HTTP_201_CREATED
+        )
