@@ -44,9 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'apps.accounts',
-    'apps.projetos',
-    "rest_framework_simplejwt.token_blacklist",
+    'rest_framework_simplejwt.token_blacklist',
+    'apps.accounts.apps.AccountsConfig',
+    'apps.projetos.apps.ProjetosConfig',
 ]
 
 MIDDLEWARE = [
