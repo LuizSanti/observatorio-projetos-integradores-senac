@@ -5,7 +5,7 @@ from .models import Projeto, Avaliacao
 class AvaliacaoSerializer(serializers.ModelSerializer):
     professor_nome = serializers.CharField(
         source='professor.get_full_name',
-        read_only=True
+        read_only=True, required=False
     )
 
     class Meta:
