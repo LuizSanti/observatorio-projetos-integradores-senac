@@ -3,7 +3,6 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from apps.projetos.models import Projeto, Avaliacao
 from apps.projetos.email_service import (
-    enviar_email_submissao,
     enviar_email_avaliacao,
 )
 User = get_user_model()
