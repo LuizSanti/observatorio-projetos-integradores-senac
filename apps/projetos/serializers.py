@@ -3,10 +3,13 @@ from .models import Projeto, Avaliacao
 
 
 class AvaliacaoSerializer(serializers.ModelSerializer):
-    professor_nome = serializers.CharField(
-        source='professor.get_full_name',
-        read_only=True, required=False
-    )
+    professor_nome = serializers.SerializerMethodField()
+
+    def get_professor_nome(self, obj):
+        if obj.professor:
+            full_name = obj.professor.get_full_name()
+            return full_name if full_name.strip() else obj.professor.username
+        return None
 
     class Meta:
         model = Avaliacao
@@ -24,16 +27,17 @@ class AvaliacaoSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["nota_final", "professor_nome", "avaliado_em"]
         extra_kwargs = {
-            "projeto": {"write_only": True}  # não aparece no GET aninhado dentro de Projeto
+            "projeto": {"write_only": True}
         }
 
 
 class ProjetoSerializer(serializers.ModelSerializer):
-    autor_nome = serializers.CharField(
-        source='autor.get_full_name',
-        read_only=True
-    )
+    autor_nome = serializers.SerializerMethodField()
     avaliacao = AvaliacaoSerializer(read_only=True)
+
+    def get_autor_nome(self, obj):
+        full_name = obj.autor.get_full_name()
+        return full_name if full_name.strip() else obj.autor.username
 
     class Meta:
         model = Projeto
