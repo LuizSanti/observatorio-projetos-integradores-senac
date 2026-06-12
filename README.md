@@ -1,385 +1,154 @@
-# 🔭 Observatório de Projetos Integradores
+<h1 align="center">Observatório de Projetos — Senac</h1>
 
-> Sistema web centralizado para submissão, avaliação e consulta dos Projetos Integradores do SENAC.
+<p align="center">
+  <a href="#portuguese">🇧🇷 Português</a> &nbsp;|&nbsp;
+  <a href="#english">🇺🇸 English</a>
+</p>
 
------
+---
 
-## 📋 Descrição do Sistema
+<h2 id="portuguese">🇧🇷 Português</h2>
 
-O **Observatório de Projetos Integradores** é uma plataforma web desenvolvida para centralizar e organizar os Projetos Integradores (PIs) do curso de Análise e Desenvolvimento de Sistemas da Faculdade SENAC. O sistema resolve o problema da descentralização no envio e armazenamento dos projetos, que anteriormente eram enviados por e-mail ou Teams, gerando dificuldades de controle de versões, organização por turma/turno e perda de informações.
+### 📌 Descrição
 
-A plataforma permite:
+Sistema web fullstack para gerenciamento e acompanhamento de projetos integradores do curso de Análise e Desenvolvimento de Sistemas (ADS) do Senac Recife.
 
-- 📤 Submissão centralizada dos projetos pelos alunos
-- 📝 Avaliação dos projetos pelos professores dentro da plataforma
-- 👁️ Visualização dos projetos pela coordenação
-- 💼 Criação de portfólio profissional para os alunos
-- 🔍 Consulta de projetos por empresas parceiras
+### 🎯 Objetivo
 
------
+Centralizar o ciclo de vida dos projetos integradores — da submissão à avaliação — em uma plataforma única com controle de acesso por perfil: aluno, professor, coordenador e empresa.
 
-## 🎯 Objetivo
+### 🛠️ Tecnologias Utilizadas
 
-Unificar a avaliação e consulta dos Projetos Integradores em um único sistema e criar uma **Vitrine Digital** para facilitar a busca por projetos inovadores e novos talentos.
+| Camada | Tecnologia |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript, REACT e Typescript |
+| Backend | Python, Django |
+| Banco de Dados | PostgreSQL |
 
------
+### 📐 Regras de Negócio
 
-## 👥 Partes Interessadas (Stakeholders)
+- Cada projeto passa pelos status: `RASCUNHO → SUBMETIDO → EM_AVALIACAO → AVALIADO → APROVADO / REPROVADO`
+- A nota final é calculada automaticamente: Apresentação (25%) + Documentação (25%) + Inovação (20%) + Técnica (30%)
+- Um projeto só aparece no portfólio público se estiver com status `APROVADO` ou `AVALIADO`
+- Cada professor pode avaliar um projeto apenas uma vez
+- O upload de um novo arquivo incrementa automaticamente a versão do projeto
 
-|Perfil                |Funcionalidades                                          |
-|----------------------|---------------------------------------------------------|
-|**Alunos**            |Submissão de projetos e criação de portfólio profissional|
-|**Professores**       |Avaliação de projetos e registro de avaliador            |
-|**Coordenadores/Adm** |Visão estratégica do curso e geração de relatórios       |
-|**Empresas Parceiras**|Identificação e recrutamento de novos talentos           |
+### 🚀 Como Executar
 
------
-
-## 🛠️ Tecnologias Utilizadas
-
-- **Python** — Linguagem principal de desenvolvimento
-- **Django** — Framework web back-end (com conector para MongoDB)
-- **SQLite** — Banco de dados relacional (desenvolvimento/local)
-- **MongoDB** — Banco de dados NoSQL (via conector Django)
-- **HTML5 / CSS3** — Estrutura e estilização do front-end
-- **Git / GitHub** — Controle de versão e hospedagem do repositório
-- **Trello** — Gerenciamento de tarefas e organização do projeto
-
-> ⚠️ As tecnologias podem ser ajustadas, substituídas ou ampliadas ao longo do projeto, conforme as necessidades identificadas pela equipe ou fatores técnicos que justifiquem a adoção de novas ferramentas.
-
------
-
-## 📐 Regras de Negócio
-
-- Somente alunos autenticados podem submeter projetos
-- Cada projeto deve estar vinculado a uma turma e turno
-- Professores só avaliam projetos das turmas às quais estão atribuídos
-- O coordenador tem acesso completo a todos os projetos e relatórios
-- Empresas parceiras têm acesso somente leitura aos projetos publicados como portfólio
-- Um projeto só é visível na Vitrine Digital após aprovação pela coordenação
-
------
-
-## 🚀 Como Executar o Projeto
-
-### Pré-requisitos
-
-Certifique-se de ter instalado em sua máquina:
-
-- [Python 3.10+](https://www.python.org/downloads/)
-- [Git](https://git-scm.com/)
-- [pip](https://pip.pypa.io/en/stable/) (geralmente já incluso com o Python)
-
------
-
-### 1. Clonar o repositório
+**Pré-requisitos:** Python 3.10+ e pip instalados.
 
 ```bash
-git clone https://github.com/seu-usuario/observatorio-projetos-integradores.git
-cd observatorio-projetos-integradores
-```
+# Clone o repositório
+git clone https://github.com/seu-usuario/observatorio-projetos.git
+cd observatorio-projetos/backend
 
------
-
-### 2. Criar e ativar o ambiente virtual
-
-**Windows:**
-
-```bash
+# Crie e ative o ambiente virtual
 python -m venv venv
-venv\Scripts\activate
-```
+source venv/bin/activate      # Linux/macOS
+venv\Scripts\activate         # Windows
 
-**Linux / macOS:**
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
------
-
-### 3. Instalar as dependências
-
-```bash
+# Instale as dependências e rode o servidor
 pip install -r requirements.txt
-```
-
-> As principais dependências incluem Django, o conector Django-MongoDB e outras bibliotecas listadas no `requirements.txt`.
-
------
-
-### 4. Configurar as variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto com base no arquivo de exemplo:
-
-```bash
-cp .env.example .env
-```
-
-Edite o `.env` com suas configurações locais (chave secreta, configurações do banco, etc.).
-
------
-
-### 5. Aplicar as migrações do banco de dados
-
-```bash
-python manage.py makemigrations
 python manage.py migrate
-```
-
------
-
-### 6. Criar um superusuário (administrador)
-
-```bash
-python manage.py createsuperuser
-```
-
-Siga as instruções no terminal para definir usuário, e-mail e senha.
-
------
-
-### 7. Rodar o servidor de desenvolvimento
-
-```bash
 python manage.py runserver
 ```
 
-Acesse o sistema em: <http://127.0.0.1:8000>
+Acesse em `http://127.0.0.1:8000`. Para o frontend, abra `frontend/index.html` no navegador.
 
-Painel administrativo: <http://127.0.0.1:8000/admin>
+**Credenciais de teste:**
 
------
+| Perfil | E-mail | Senha |
+|---|---|---|
+| Aluno | aluno@senac.br | aluno123 |
+| Professor | professor@senac.br | prof123 |
+| Coordenador | admin@senac.br | admin123 |
 
-## 📁 Estrutura do Projeto
+### 📄 Documentação
 
-```
-observatorio-projetos-integradores/
-│
-├── core/                  # App principal do sistema
-├── usuarios/              # Gerenciamento de usuários e perfis
-├── projetos/              # Submissão e avaliação de projetos
-├── templates/             # Templates HTML
-├── static/                # Arquivos estáticos (CSS, JS, imagens)
-├── manage.py
-├── requirements.txt
-├── .env.example
-└── README.md
-```
+> _(adicione aqui o link para a documentação completa)_
 
------
+### 👥 Equipe
 
-## 📚 Documentação
+| Nome |
+|---|
+| Felipe Mitchell Campos |
+| Luiz Gabriel Santiago |
+| Mariah Aparecida Navarro |
+| Vinícius Nascimento |
+| Victória Soares |
 
-A documentação completa do projeto está disponível em: 
+---
 
------
+<h2 id="english">🇺🇸 English</h2>
 
-## 🏫 Instituição
+### 📌 Description
 
-Desenvolvido por alunos do curso de Análise e Desenvolvimento de Sistemas da **Faculdade SENAC**, como parte do Projeto Integrador interdisciplinar.
+A fullstack web system for managing and tracking integrative projects from the Systems Analysis and Development (ADS) program at Senac Recife.
 
------
+### 🎯 Objective
 
+Centralize the full lifecycle of integrative projects — from submission to evaluation — in a single platform with role-based access control: student, teacher, coordinator, and company.
 
-# 🔭 Integrative Projects Observatory
+### 🛠️ Technologies
 
-> A centralized web system for submission, evaluation, and consultation of Integrative Projects at SENAC.
+| Layer | Technology |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript, Chart.js 4.4 |
+| Backend | Python 3, Django |
+| Database | SQLite |
 
------
+### 📐 Business Rules
 
-## 📋 System Description
+- Projects follow this status flow: `DRAFT → SUBMITTED → UNDER_REVIEW → EVALUATED → APPROVED / REJECTED`
+- Final grade is auto-calculated: Presentation (25%) + Documentation (25%) + Innovation (20%) + Technical (30%)
+- Projects only appear in the public portfolio if status is `APPROVED` or `EVALUATED`
+- Each teacher may evaluate a given project only once
+- Uploading a new file automatically increments the project version
 
-The **Integrative Projects Observatory** is a web platform developed to centralize and organize the Integrative Projects (IPs) of Faculdade SENAC’s System Analysis and development course. The system solves the problem of decentralization in project submission and storage, which were previously sent via e-mail or Teams, causing difficulties with version control, class/shift organization, and loss of information.
+### 🚀 How to Run
 
-The platform allows:
-
-- 📤 Centralized project submission by students
-- 📝 Project evaluation by teachers within the platform
-- 👁️ Project visualization by coordinators
-- 💼 Professional portfolio creation for students
-- 🔍 Project browsing by partner companies
-
------
-
-## 🎯 Objective
-
-To unify the evaluation and consultation of Integrative Projects into a single system and create a **Digital Showcase** to make it easier to discover innovative projects and new talents.
-
------
-
-## 👥 Stakeholders
-
-|Profile               |Features                                              |
-|----------------------|------------------------------------------------------|
-|**Students**          |Project submission and professional portfolio creation|
-|**Teachers**          |Project evaluation and evaluator record               |
-|**Coordinators/Admin**|Strategic overview of the course and report generation|
-|**Partner Companies** |Identification and recruitment of new talents         |
-
------
-
-## 🛠️ Technologies Used
-
-- **Python** — Main development language
-- **Django** — Back-end web framework (with MongoDB connector)
-- **SQLite** — Relational database (development/local)
-- **MongoDB** — NoSQL database (via Django connector)
-- **HTML5 / CSS3** — Front-end structure and styling
-- **Git / GitHub** — Version control and repository hosting
-- **Trello** — Task management and project organization
-
-> ⚠️ Technologies may be adjusted, replaced, or expanded throughout the project, according to needs identified by the team or technical factors that justify the adoption of new tools or complementary technologies.
-
------
-
-## 📐 Business Rules
-
-- Only authenticated students can submit projects
-- Each project must be linked to a class and shift
-- Teachers can only evaluate projects from their assigned classes
-- The coordinator has full access to all projects and reports
-- Partner companies have read-only access to projects published as portfolio
-- A project is only visible in the Digital Showcase after approval by the coordinator
-
------
-
-## 🚀 How to Run the Project
-
-### Prerequisites
-
-Make sure you have the following installed on your machine:
-
-- [Python 3.10+](https://www.python.org/downloads/)
-- [Git](https://git-scm.com/)
-- [pip](https://pip.pypa.io/en/stable/) (usually bundled with Python)
-
------
-
-### 1. Clone the repository
+**Prerequisites:** Python 3.10+ and pip.
 
 ```bash
-git clone https://github.com/your-username/integrative-projects-observatory.git
-cd integrative-projects-observatory
-```
+# Clone the repository
+git clone https://github.com/seu-usuario/observatorio-projetos.git
+cd observatorio-projetos/backend
 
------
-
-### 2. Create and activate a virtual environment
-
-**Windows:**
-
-```bash
+# Create and activate a virtual environment
 python -m venv venv
-venv\Scripts\activate
-```
+source venv/bin/activate      # Linux/macOS
+venv\Scripts\activate         # Windows
 
-**Linux / macOS:**
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
------
-
-### 3. Install dependencies
-
-```bash
+# Install dependencies and start the server
 pip install -r requirements.txt
-```
-
-> Main dependencies include Django, the Django-MongoDB connector, and other libraries listed in `requirements.txt`.
-
------
-
-### 4. Set up environment variables
-
-Create a `.env` file at the root of the project based on the example file:
-
-```bash
-cp .env.example .env
-```
-
-Edit the `.env` file with your local settings (secret key, database configuration, etc.).
-
------
-
-### 5. Apply database migrations
-
-```bash
-python manage.py makemigrations
 python manage.py migrate
-```
-
------
-
-### 6. Create a superuser (admin)
-
-```bash
-python manage.py createsuperuser
-```
-
-Follow the terminal instructions to set your username, e-mail, and password.
-
------
-
-### 7. Run the development server
-
-```bash
 python manage.py runserver
 ```
 
-Access the system at: <http://127.0.0.1:8000>
+Access at `http://127.0.0.1:8000`. For the frontend, open `frontend/index.html` in your browser.
 
-Admin panel: <http://127.0.0.1:8000/admin>
+**Test credentials:**
 
------
+| Role | E-mail | Password |
+|---|---|---|
+| Student | aluno@senac.br | aluno123 |
+| Teacher | professor@senac.br | prof123 |
+| Coordinator | admin@senac.br | admin123 |
 
-## 📁 Project Structure
+### 📄 Documentation
 
-```
-integrative-projects-observatory/
-│
-├── core/                  # Main application
-├── users/                 # User and profile management
-├── projects/              # Project submission and evaluation
-├── templates/             # HTML templates
-├── static/                # Static files (CSS, JS, images)
-├── manage.py
-├── requirements.txt
-├── .env.example
-└── README.md
-```
+> _(add the link to the full documentation here)_
 
------
+### 👥 Team
 
-## 📚 Documentation
+| Name |
+|---|
+| Felipe Mitchell Campos |
+| Luiz Gabriel Santiago |
+| Mariah Aparecida Navarro |
+| Vinícius Nascimento |
+| Victória Soares |
 
-Full project documentation is available at: *(link to be added)*
+---
 
------
-
-## 🏫 Institution
-
-Developed by students of the technical course at **Faculdade SENAC**, as part of the interdisciplinary Integrative Project.
-
------
-
-## 📄 License
-
-This project is for academic use and is subject to the terms defined by the SENAC institution.
-
-
-### Nosso Time / Our team: 
-
-Felipe Mitchell Campos
-
-Luiz Gabriel Santiago
-
-Mariah Aparecida Navarro 
-
-Vinícius Nascimento
-
-Victória Soares 
+<p align="center">Senac Fecomércio © 2026</p>
